@@ -3,137 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siddhartha's World Clock</title>
+    <title>Siddhartha's World Time Hub</title>
     <style>
         :root { --primary: #2563eb; --ist: #ff9933; --cet: #003399; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f7f9; display: flex; justify-content: center; padding: 20px; color: #333; }
-        .container { width: 100%; max-width: 800px; background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        header { text-align: center; border-bottom: 2px solid #eee; margin-bottom: 25px; }
-        .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
-        .card { padding: 20px; border-radius: 15px; text-align: center; border: 1px solid #eee; }
-        .ist-card { border-top: 5px solid var(--ist); }
-        .cet-card { border-top: 5px solid var(--cet); }
-        .time { font-size: 2.5rem; font-weight: bold; margin: 10px 0; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; display: flex; justify-content: center; padding: 20px; color: #1e293b; }
+        .container { width: 100%; max-width: 850px; background: white; padding: 40px; border-radius: 24px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        header { text-align: center; margin-bottom: 40px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; }
+        .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 40px; }
+        .clock { padding: 30px; border-radius: 20px; text-align: center; background: #fff; border: 1px solid #e2e8f0; transition: transform 0.2s; }
+        .clock:hover { transform: translateY(-5px); }
+        .ist { border-top: 6px solid var(--ist); }
+        .cet { border-top: 6px solid var(--cet); }
+        .time { font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin: 15px 0; font-variant-numeric: tabular-nums; }
         
-        .converter-box { background: #f8fafc; padding: 20px; border-radius: 15px; border: 1px solid #e2e8f0; }
-        .conv-row { display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; }
-        input[type="time"] { padding: 12px; font-size: 1.2rem; border-radius: 8px; border: 2px solid #cbd5e1; }
-        .swap-icon { font-size: 2rem; cursor: pointer; user-select: none; transition: 0.3s; }
-        .swap-icon:hover { transform: scale(1.2); }
-        .result { font-size: 1.5rem; font-weight: bold; color: var(--primary); background: white; padding: 10px 20px; border-radius: 8px; border: 1px solid #cbd5e1; min-width: 140px; text-align: center;}
-        
-        .world-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-top: 20px; }
-        .mini-card { background: #fff; padding: 10px; border: 1px solid #eee; border-radius: 10px; font-size: 0.85rem; }
+        .converter { background: #f8fafc; padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; margin-bottom: 40px; }
+        .conv-ui { display: flex; align-items: center; justify-content: space-around; gap: 20px; flex-wrap: wrap; }
+        input { padding: 15px; font-size: 1.5rem; border-radius: 12px; border: 2px solid #cbd5e1; outline: none; }
+        input:focus { border-color: var(--primary); }
+        .swap { font-size: 2.5rem; cursor: pointer; transition: 0.3s; color: #64748b; }
+        .swap:hover { color: var(--primary); transform: rotate(180deg); }
+        .out { font-size: 1.8rem; font-weight: 700; color: var(--primary); background: white; padding: 15px 30px; border-radius: 12px; border: 2px solid #e2e8f0; min-width: 180px; text-align: center; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #475569; text-transform: uppercase; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <header>
-        <h1 style="margin:0">World Time Hub</h1>
-        <p>Dashboard for <strong>Siddhartha</strong></p>
+        <h1 style="margin:0; font-size: 2rem;">World Time Hub</h1>
+        <p style="color:#64748b;">Exclusive Dashboard for <strong>Siddhartha</strong></p>
     </header>
 
-    <div class="hero-grid">
-        <div class="card ist-card">
-            <span>INDIA (IST)</span>
-            <div id="live-ist" class="time">--:--:--</div>
+    <div class="hero">
+        <div class="clock ist">
+            <label>India (IST)</label>
+            <div id="ist-now" class="time">--:--:--</div>
         </div>
-        <div class="card cet-card">
-            <span>EUROPE (CET/CEST)</span>
-            <div id="live-cet" class="time">--:--:--</div>
-        </div>
-    </div>
-
-    <div class="converter-box">
-        <h3 style="margin-top:0">Instant Conversion</h3>
-        <div class="conv-row">
-            <div style="display:flex; flex-direction:column">
-                <label id="label-left">From India</label>
-                <input type="time" id="input-time" value="01:00">
-            </div>
-            <div class="swap-icon" id="swap-btn">⇄</div>
-            <div style="display:flex; flex-direction:column">
-                <label id="label-right">To Europe</label>
-                <div id="output-time" class="result">--:--</div>
-            </div>
+        <div class="clock cet">
+            <label>Central Europe (CET)</label>
+            <div id="cet-now" class="time">--:--:--</div>
         </div>
     </div>
 
-    <h4>Global Quick View</h4>
-    <div id="world-grid" class="world-grid"></div>
+    <div class="converter">
+        <div class="conv-ui">
+            <div>
+                <label id="l-left">From India (IST)</label>
+                <input type="time" id="time-in" value="01:00">
+            </div>
+            <div class="swap" id="swap">⇄</div>
+            <div>
+                <label id="l-right">To Central Europe (CET)</label>
+                <div id="time-out" class="out">--:--</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    let isIstToCet = true;
+    let istToCet = true;
 
-    // Core logic to get current offset between two zones safely
-    function getOffset(zone) {
+    function getMinutes(zone) {
         const now = new Date();
-        const tzTime = new Date(now.toLocaleString("en-US", {timeZone: zone}));
-        const utcTime = new Date(now.toLocaleString("en-US", {timeZone: "UTC"}));
-        return (tzTime - utcTime) / (1000 * 60); // minutes
+        const parts = new Intl.DateTimeFormat('en-US', {
+            timeZone: zone, hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
+        }).formatToParts(now);
+        const h = parseInt(parts.find(p => p.type === 'hour').value);
+        const m = parseInt(parts.find(p => p.type === 'minute').value);
+        
+        // Get UTC hours/minutes to find the true offset
+        const utcParts = new Intl.DateTimeFormat('en-US', {
+            timeZone: 'UTC', hour: 'numeric', minute: 'numeric', hourCycle: 'h23'
+        }).formatToParts(now);
+        const utcH = parseInt(utcParts.find(p => p.type === 'hour').value);
+        const utcM = parseInt(utcParts.find(p => p.type === 'minute').value);
+
+        const localTotal = h * 60 + m;
+        const utcTotal = utcH * 60 + utcM;
+        
+        let diff = localTotal - utcTotal;
+        if (diff > 720) diff -= 1440;
+        if (diff < -720) diff += 1440;
+        return diff;
     }
 
     function update() {
         const now = new Date();
-        document.getElementById('live-ist').innerText = now.toLocaleTimeString('en-US', {timeZone:'Asia/Kolkata', hour12:true});
-        document.getElementById('live-cet').innerText = now.toLocaleTimeString('en-US', {timeZone:'Europe/Paris', hour12:true});
-
-        const cities = [
-            {n:"London", z:"Europe/London"}, {n:"New York", z:"America/New_York"},
-            {n:"Tokyo", z:"Asia/Tokyo"}, {n:"Dubai", z:"Asia/Dubai"}
-        ];
-        let html = '';
-        cities.forEach(c => {
-            const t = now.toLocaleTimeString('en-US', {timeZone:c.z, hour:'2-digit', minute:'2-digit'});
-            html += `<div class="mini-card"><strong>${c.n}</strong><br>${t}</div>`;
-        });
-        document.getElementById('world-grid').innerHTML = html;
-        runConversion();
+        const opt = { hour12: true, hour: '2-digit', minute: '2-digit', second: '2-digit' };
+        document.getElementById('ist-now').innerText = now.toLocaleTimeString('en-US', { ...opt, timeZone: 'Asia/Kolkata' });
+        document.getElementById('cet-now').innerText = now.toLocaleTimeString('en-US', { ...opt, timeZone: 'Europe/Paris' });
+        run();
     }
 
-    function runConversion() {
-        const timeInput = document.getElementById('input-time').value;
-        if(!timeInput) return;
-
-        const [h, m] = timeInput.split(':').map(Number);
+    function run() {
+        const val = document.getElementById('time-in').value;
+        if(!val) return;
+        const [h, m] = val.split(':').map(Number);
         
-        // Calculate offsets in minutes
-        const istOffset = getOffset('Asia/Kolkata');
-        const cetOffset = getOffset('Europe/Paris');
+        const istOff = getMinutes('Asia/Kolkata');
+        const cetOff = getMinutes('Europe/Paris');
+        const diff = istToCet ? (cetOff - istOff) : (istOff - cetOff);
 
-        // Total difference in minutes
-        const diff = isIstToCet ? (cetOffset - istOffset) : (istOffset - cetOffset);
-
-        // Calculate result
-        let totalMinutes = h * 60 + m + diff;
+        let total = (h * 60 + m + diff + 1440) % 1440;
+        const resH = Math.floor(total / 60);
+        const resM = total % 60;
         
-        // Handle day wrapping (negative or > 24h)
-        totalMinutes = (totalMinutes + 1440) % 1440;
-
-        const resH = Math.floor(totalMinutes / 60);
-        const resM = Math.floor(totalMinutes % 60);
-
-        // Format to AM/PM
-        const period = resH >= 12 ? 'PM' : 'AM';
+        const ampm = resH >= 12 ? 'PM' : 'AM';
         const displayH = resH % 12 || 12;
-        const displayM = resM.toString().padStart(2, '0');
-
-        document.getElementById('output-time').innerText = `${displayH}:${displayM} ${period}`;
+        document.getElementById('time-out').innerText = `${displayH}:${resM.toString().padStart(2,'0')} ${ampm}`;
     }
 
-    document.getElementById('swap-btn').onclick = () => {
-        isIstToCet = !isIstToCet;
-        document.getElementById('label-left').innerText = isIstToCet ? "From India" : "From Europe";
-        document.getElementById('label-right').innerText = isIstToCet ? "To Europe" : "To India";
-        runConversion();
+    document.getElementById('swap').onclick = () => {
+        istToCet = !istToCet;
+        document.getElementById('l-left').innerText = istToCet ? "From India (IST)" : "From Europe (CET)";
+        document.getElementById('l-right').innerText = istToCet ? "To Europe (CET)" : "To India (IST)";
+        run();
     };
 
-    document.getElementById('input-time').oninput = runConversion;
+    document.getElementById('time-in').oninput = run;
     setInterval(update, 1000);
     update();
 </script>
-
 </body>
 </html>
